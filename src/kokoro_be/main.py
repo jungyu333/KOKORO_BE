@@ -1,13 +1,34 @@
+import os
+
+import click
 import uvicorn
+from app.core.config import get_settings
 
 
-def main():
+@click.command()
+@click.option(
+    "--env",
+    type=click.Choice(["dev", "prod"], case_sensitive=False),
+    default="dev",
+)
+@click.option(
+    "--debug",
+    type=click.BOOL,
+    is_flag=True,
+    default=False,
+)
+def main(env: str, debug: bool) -> None:
+    print(env)
+    os.environ["ENV"] = env
+    os.environ["DEBUG"] = str(debug)
+
+    settings = get_settings()
 
     uvicorn.run(
         app="app.server:app",
-        host="0.0.0.0",
-        port=8080,
-        reload=True,
+        host=settings.APP_HOST,
+        port=settings.APP_PORT,
+        reload=True if env == "dev" else False,
         workers=1,
     )
 
