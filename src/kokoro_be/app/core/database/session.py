@@ -1,8 +1,15 @@
+from contextlib import asynccontextmanager
 from contextvars import ContextVar, Token
 from enum import Enum
+from typing import AsyncGenerator
 
-from sqlalchemy.ext.asyncio import create_async_engine
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import (
+    AsyncSession,
+    async_scoped_session,
+    async_sessionmaker,
+    create_async_engine,
+)
+from sqlalchemy.orm import DeclarativeBase, Session
 from sqlalchemy.sql.expression import Delete, Insert, Update
 
 from ..config import get_settings
@@ -41,3 +48,26 @@ class RoutingSession(Session):
             return engines[EngineType.WRITER].sync_engine
         else:
             return engines[EngineType.READER].sync_engine
+
+
+_async_session_factory = async_sessionmaker(
+    class_=AsyncSession,
+    sync_session_class=RoutingSession,
+    expire_on_commit=False,
+)
+
+session = async_scoped_session(
+    sessionmaker=_async_session_factory, scopefunc=get_session_context
+)
+
+
+class Base(DeclarativeBase): ...
+
+
+@asynccontextmanager
+async def session_factory() -> AsyncGenerator[AsyncSession, None]:
+    _session = _async_session_factory()
+    try:
+        yield _session
+    finally:
+        await _session.close()
