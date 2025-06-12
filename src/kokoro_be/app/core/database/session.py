@@ -3,12 +3,8 @@ from contextvars import ContextVar, Token
 from enum import Enum
 from typing import AsyncGenerator
 
-from sqlalchemy.ext.asyncio import (
-    AsyncSession,
-    async_scoped_session,
-    async_sessionmaker,
-    create_async_engine,
-)
+from sqlalchemy.ext.asyncio import (AsyncSession, async_scoped_session,
+                                    async_sessionmaker, create_async_engine)
 from sqlalchemy.orm import DeclarativeBase, Session
 from sqlalchemy.sql.expression import Delete, Insert, Update
 
@@ -57,7 +53,7 @@ _async_session_factory = async_sessionmaker(
 )
 
 session = async_scoped_session(
-    sessionmaker=_async_session_factory, scopefunc=get_session_context
+    session_factory=_async_session_factory, scopefunc=get_session_context
 )
 
 
