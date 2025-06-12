@@ -2,6 +2,8 @@ from fastapi import FastAPI
 from fastapi.middleware import Middleware
 from fastapi.middleware.cors import CORSMiddleware
 
+from .core.middleware import SQLAlchemyMiddleware
+
 
 def make_middleware() -> list[Middleware]:
     middleware = [
@@ -12,6 +14,7 @@ def make_middleware() -> list[Middleware]:
             allow_methods=["*"],
             allow_headers=["*"],
         ),
+        Middleware(SQLAlchemyMiddleware),
     ]
     return middleware
 
