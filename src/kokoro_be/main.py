@@ -18,7 +18,7 @@ from app.core.config import get_settings
     default=False,
 )
 def main(env: str, debug: bool) -> None:
-    print(env)
+
     os.environ["ENV"] = env
     os.environ["DEBUG"] = str(debug)
 
