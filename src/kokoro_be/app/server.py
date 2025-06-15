@@ -5,7 +5,11 @@ from fastapi.requests import Request
 from fastapi.responses import JSONResponse
 
 from .core.exceptions import BaseCustomException
-from .core.middleware import SQLAlchemyMiddleware
+from .core.middleware import (
+    SQLAlchemyMiddleware,
+    ResponseLogMiddleware,
+    RequestLogMiddleware,
+)
 
 
 def init_listener(app_: FastAPI) -> None:
@@ -31,6 +35,8 @@ def make_middleware() -> list[Middleware]:
             allow_headers=["*"],
         ),
         Middleware(SQLAlchemyMiddleware),
+        Middleware(RequestLogMiddleware),
+        Middleware(ResponseLogMiddleware),
     ]
     return middleware
 
