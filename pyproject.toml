@@ -16,7 +16,8 @@ dependencies = [
     "dependency-injector (>=4.47.1,<5.0.0)",
     "alembic (==1.13.1)",
     "pydantic-settings (==2.1.0)",
-    "aiomysql (>=0.2.0,<0.3.0)"
+    "aiomysql (>=0.2.0,<0.3.0)",
+    "aiofiles (>=24.1.0,<25.0.0)"
 ]
 
 [tool.poetry]
